@@ -8,12 +8,12 @@ var (
 	runStateDesc = prometheus.NewDesc(
 		"tfcbadge_run_state_timestamp",
 		"Current state of runs.",
-		[]string{"workspace_id", "workspace_name", "trigger", "status", "run_id"}, nil)
+		[]string{"workspace_id", "workspace_name", "trigger", "status"}, nil)
 
 	runsDesc = prometheus.NewDesc(
 		"tfcbadge_runs_seconds",
 		"Duration of runs in seconds from created_at to notifications.updated_at.",
-		[]string{"workspace_id", "workspace_name", "trigger", "status", "run_id"}, nil)
+		[]string{"workspace_id", "workspace_name", "trigger", "status"}, nil)
 )
 
 type MetricsCollector struct {
@@ -40,7 +40,6 @@ func (c *MetricsCollector) Collect(ch chan<- prometheus.Metric) {
 			run.WorkspaceName,
 			notification.Trigger,
 			notification.RunStatus,
-			run.ID,
 		)
 
 		ch <- prometheus.MustNewConstMetric(
@@ -51,7 +50,6 @@ func (c *MetricsCollector) Collect(ch chan<- prometheus.Metric) {
 			run.WorkspaceName,
 			notification.Trigger,
 			notification.RunStatus,
-			run.ID,
 		)
 	}
 }
