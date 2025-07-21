@@ -86,7 +86,7 @@ func (a *AppServer) handleRun() http.HandlerFunc {
 		}
 
 		if err := json.NewDecoder(&buf).Decode(run); err != nil {
-			log.Printf("error decoding request: %var", err)
+			log.Printf("error decoding request: %v", err)
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}

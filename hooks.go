@@ -45,12 +45,6 @@ var GrafanaAnnotation = func(grafanaHost, grafanaAPIKey string) func(r *Run) err
 			return nil
 		}
 
-		t := r.Notifications[0].Trigger
-		// We only care about the final state of the run, which can be either successful or not.
-		if t != "run:errored" && t != "run:completed" {
-			return nil
-		}
-
 		payload := grafanaAnnotationPayload{
 			Time: r.Notifications[0].RunUpdatedAt.UnixMilli(),
 			Text: fmt.Sprintf("%s workspace %q: %q", r.Notifications[0].RunStatus, r.WorkspaceName, r.Message),
@@ -63,17 +57,17 @@ var GrafanaAnnotation = func(grafanaHost, grafanaAPIKey string) func(r *Run) err
 
 		b, err := json.Marshal(payload)
 		if err != nil {
-			return fmt.Errorf("error encoding JSON payload: %v", err)
+			return fmt.Errorf("error encoding JSON payload: %w", err)
 		}
 		req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/api/annotations", grafanaHost), bytes.NewReader(b))
 		if err != nil {
-			return fmt.Errorf("error creating new HTTP request: %v", err)
+			return fmt.Errorf("error creating new HTTP request: %w", err)
 		}
 		req.Header.Add("Content-Type", "application/json")
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", grafanaAPIKey))
 		res, err := http.DefaultClient.Do(req)
 		if err != nil {
-			return fmt.Errorf("error making HTTP request to %q: %v", err)
+			return fmt.Errorf("error making HTTP request to %q: %w", req.URL, err)
 		}
 		if res.StatusCode != http.StatusOK {
 			return fmt.Errorf("http request unsucessful: %s", res.Status)
