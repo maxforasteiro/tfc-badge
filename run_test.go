@@ -8,25 +8,25 @@ import (
 )
 
 func TestRun_UnmarshalJSON(t *testing.T) {
-	// Test with real Terraform Cloud webhook payload structure
+	// Test with fake Terraform Cloud webhook payload structure
 	jsonPayload := `{
 		"payload_version": 1,
-		"notification_configuration_id": "nc-VQ6mp8VceWRjUPU8",
-		"run_url": "https://app.terraform.io/app/sumup/cloudflare-sumup_com/runs/run-F6a5598jQoT23MGH",
-		"run_id": "run-F6a5598jQoT23MGH",
-		"run_message": "[WBPL-447] Set response headers for static.sumup.com (#1026)",
+		"notification_configuration_id": "nc-ABC123DEF456GHI",
+		"run_url": "https://app.terraform.io/app/example-org/example-workspace/runs/run-ABC123DEF456",
+		"run_id": "run-ABC123DEF456",
+		"run_message": "[TICKET-123] Update infrastructure configuration (#456)",
 		"run_created_at": "2025-07-21T08:20:19.000Z",
-		"run_created_by": "connor-baer",
-		"workspace_id": "ws-XANEgSdLDk5Lxs9e",
-		"workspace_name": "cloudflare-sumup_com",
-		"organization_name": "sumup",
+		"run_created_by": "example-user",
+		"workspace_id": "ws-ABC123DEF456",
+		"workspace_name": "example-workspace",
+		"organization_name": "example-org",
 		"notifications": [
 			{
 				"message": "Run Created",
 				"trigger": "run:created",
 				"run_status": "pending",
 				"run_updated_at": "2025-07-21T08:20:19.000Z",
-				"run_updated_by": "connor-baer"
+				"run_updated_by": "example-user"
 			}
 		]
 	}`
@@ -38,26 +38,26 @@ func TestRun_UnmarshalJSON(t *testing.T) {
 	}
 
 	// Verify fields
-	if run.ID != "run-F6a5598jQoT23MGH" {
-		t.Errorf("expected ID run-F6a5598jQoT23MGH, got %s", run.ID)
+	if run.ID != "run-ABC123DEF456" {
+		t.Errorf("expected ID run-ABC123DEF456, got %s", run.ID)
 	}
 	if run.PayloadVersion != 1 {
 		t.Errorf("expected PayloadVersion 1, got %d", run.PayloadVersion)
 	}
-	if run.RunURL != "https://app.terraform.io/app/sumup/cloudflare-sumup_com/runs/run-F6a5598jQoT23MGH" {
+	if run.RunURL != "https://app.terraform.io/app/example-org/example-workspace/runs/run-ABC123DEF456" {
 		t.Errorf("unexpected RunURL: %s", run.RunURL)
 	}
-	if run.WorkspaceID != "ws-XANEgSdLDk5Lxs9e" {
-		t.Errorf("expected WorkspaceID ws-XANEgSdLDk5Lxs9e, got %s", run.WorkspaceID)
+	if run.WorkspaceID != "ws-ABC123DEF456" {
+		t.Errorf("expected WorkspaceID ws-ABC123DEF456, got %s", run.WorkspaceID)
 	}
-	if run.WorkspaceName != "cloudflare-sumup_com" {
-		t.Errorf("expected WorkspaceName cloudflare-sumup_com, got %s", run.WorkspaceName)
+	if run.WorkspaceName != "example-workspace" {
+		t.Errorf("expected WorkspaceName example-workspace, got %s", run.WorkspaceName)
 	}
-	if run.Message != "[WBPL-447] Set response headers for static.sumup.com (#1026)" {
+	if run.Message != "[TICKET-123] Update infrastructure configuration (#456)" {
 		t.Errorf("unexpected Message: %s", run.Message)
 	}
-	if run.CreatedBy != "connor-baer" {
-		t.Errorf("expected CreatedBy connor-baer, got %s", run.CreatedBy)
+	if run.CreatedBy != "example-user" {
+		t.Errorf("expected CreatedBy example-user, got %s", run.CreatedBy)
 	}
 
 	// Check notifications
